@@ -15,7 +15,7 @@ class ViewController: UIViewController {
     
     @IBAction func searchUser() {
         getData()
-        dispatch_async(dispatch_get_main_queue()) { self.loginInput.resignFirstResponder() }
+        self.loginInput.resignFirstResponder()
     }
     
     var token = String()
@@ -26,7 +26,7 @@ class ViewController: UIViewController {
             token = savedToken
             print("got the saved token:\n" + token)
         }
-        dispatch_async(dispatch_get_main_queue()) { self.loginInput.becomeFirstResponder() }
+        self.loginInput.becomeFirstResponder()
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -71,7 +71,7 @@ class ViewController: UIViewController {
     func getData () {
         print("getting user data")
         var login = String()
-        if (self.loginInput.text != nil) {
+        if (self.loginInput.text != "") {
             login = self.loginInput.text!.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
         }else {
             print("loginInput vide")
@@ -92,7 +92,9 @@ class ViewController: UIViewController {
             
             do {
                 let json = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions()) as? [String: AnyObject]
-                self.performSegueWithIdentifier("viewUser", sender: json)
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.performSegueWithIdentifier("viewUser", sender: json)
+                }
             } catch {
                 print(error)
             }

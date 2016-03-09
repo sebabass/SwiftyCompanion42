@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4A280EE51C8C3D69002ADE1D /* tableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A280EE41C8C3D69002ADE1D /* tableViewCell.swift */; };
+		4AEB4BE71C887C6400AE4153 /* collectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AEB4BE61C887C6400AE4153 /* collectionViewCell.swift */; };
 		E69E23541C7E13CC00A3AEFA /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E69E23531C7E13CC00A3AEFA /* UserViewController.swift */; };
 		E6D94BC11C7DFC8600A03574 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D94BC01C7DFC8600A03574 /* AppDelegate.swift */; };
 		E6D94BC31C7DFC8600A03574 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D94BC21C7DFC8600A03574 /* ViewController.swift */; };
@@ -35,6 +37,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4A280EE41C8C3D69002ADE1D /* tableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = tableViewCell.swift; sourceTree = "<group>"; };
+		4AEB4BE61C887C6400AE4153 /* collectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = collectionViewCell.swift; sourceTree = "<group>"; };
 		E69E23531C7E13CC00A3AEFA /* UserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
 		E6D94BBD1C7DFC8600A03574 /* swifty.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = swifty.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E6D94BC01C7DFC8600A03574 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -106,6 +110,8 @@
 				E6D94BC91C7DFC8600A03574 /* LaunchScreen.storyboard */,
 				E6D94BCC1C7DFC8600A03574 /* Info.plist */,
 				E69E23531C7E13CC00A3AEFA /* UserViewController.swift */,
+				4AEB4BE61C887C6400AE4153 /* collectionViewCell.swift */,
+				4A280EE41C8C3D69002ADE1D /* tableViewCell.swift */,
 			);
 			path = swifty;
 			sourceTree = "<group>";
@@ -260,7 +266,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E6D94BC31C7DFC8600A03574 /* ViewController.swift in Sources */,
+				4A280EE51C8C3D69002ADE1D /* tableViewCell.swift in Sources */,
 				E69E23541C7E13CC00A3AEFA /* UserViewController.swift in Sources */,
+				4AEB4BE71C887C6400AE4153 /* collectionViewCell.swift in Sources */,
 				E6D94BC11C7DFC8600A03574 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
