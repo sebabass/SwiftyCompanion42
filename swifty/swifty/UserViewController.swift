@@ -8,6 +8,7 @@
 
 import UIKit
 import QuartzCore
+import Foundation
 
 class UserViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource {
 
@@ -25,17 +26,15 @@ class UserViewController: UIViewController, UICollectionViewDelegate, UICollecti
     @IBOutlet weak var collectionView: UICollectionView!
     
     var data = [String: AnyObject]()
-    var projects = [String: AnyObject]()
-    var extProjects = [String: AnyObject]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(data)
         loadImage()
         getLogin()
         getInfos()
         getProgressBar()
         collectionView.layer.cornerRadius = 10
+        self.navigationController?.navigationBarHidden = false
     }
 
     override func didReceiveMemoryWarning() {
@@ -93,7 +92,7 @@ class UserViewController: UIViewController, UICollectionViewDelegate, UICollecti
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("collectionViewCell", forIndexPath: indexPath) as! collectionViewCell
         
         cell.skillTypeLabel.text = String(self.data["cursus"]![0]["skills"]!![indexPath.row]["name"]!!)
-        cell.xpSkillLabel.text = String(self.data["cursus"]![0]["skills"]!![indexPath.row]["level"]!!)
+        cell.xpSkillLabel.text = String(Float(self.data["cursus"]![0]["skills"]!![indexPath.row]["level"] as! NSNumber))
         cell.xpSkillProgressBar.progress = Float(self.data["cursus"]![0]["skills"]!![indexPath.row]["level"] as! NSNumber) * 5 / 100
         
         cell.layer.cornerRadius = 10
@@ -108,11 +107,43 @@ class UserViewController: UIViewController, UICollectionViewDelegate, UICollecti
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("tableViewCell", forIndexPath: indexPath) as! tableViewCell
+        var isInprogress = false
         
+        //Check extend name
         cell.projectNameLabel.text = String(self.data["cursus"]![0]["projects"]!![indexPath.row]["name"]!!)
-        cell.noteLabel.text = String(self.data["cursus"]![0]["projects"]!![indexPath.row]["final_mark"]!!)
+        if (String(self.data["cursus"]![0]["projects"]!![indexPath.row]["name"]!!).lowercaseString != String(self.data["cursus"]![0]["projects"]!![indexPath.row]["slug"]!!).lowercaseString) {
+            cell.projectNameLabel.text = cell.projectNameLabel.text! + " (" + String(self.data["cursus"]![0]["projects"]!![indexPath.row]["slug"]!!) + ")"
+        }
+        // Check final mark
+        if (String(self.data["cursus"]![0]["projects"]!![indexPath.row]["final_mark"]!!) == "<null>") {
+            cell.noteLabel.text = "in progress"
+            isInprogress = true
+        } else {
+            cell.noteLabel.text = String(self.data["cursus"]![0]["projects"]!![indexPath.row]["final_mark"]!!)
+        }
+        // Check row
+        if (indexPath.row % 2 == 0) {
+            cell.backgroundColor = UIColorFromRGB("202026")
+            cell.noteLabel.textColor = (isInprogress) ? UIColorFromRGB("E6B291") : UIColorFromRGB("FFFFFF")
+        } else {
+            cell.backgroundColor = UIColorFromRGB("FFFFFF")
+            cell.noteLabel.textColor = (isInprogress) ? UIColorFromRGB("E6B291") : UIColorFromRGB("202026")
+        }
         
         return cell
+    }
+    
+    func UIColorFromRGB(colorCode: String, alpha: Float = 1.0) -> UIColor {
+        let scanner = NSScanner(string:colorCode)
+        var color:UInt32 = 0;
+        scanner.scanHexInt(&color)
+        
+        let mask = 0x000000FF
+        let r = CGFloat(Float(Int(color >> 16) & mask)/255.0)
+        let g = CGFloat(Float(Int(color >> 8) & mask)/255.0)
+        let b = CGFloat(Float(Int(color) & mask)/255.0)
+        
+        return UIColor(red: r, green: g, blue: b, alpha: CGFloat(alpha))
     }
     
     /*

@@ -8,14 +8,16 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITextFieldDelegate {
 
     let saved = NSUserDefaults.standardUserDefaults()
     @IBOutlet weak var loginInput: UITextField!
+    @IBOutlet weak var loadUser: UIActivityIndicatorView!
     
     @IBAction func searchUser() {
-        getData()
         self.loginInput.resignFirstResponder()
+        self.loadUser.startAnimating()
+        getData()
     }
     
     var token = String()
@@ -27,13 +29,22 @@ class ViewController: UIViewController {
             print("got the saved token:\n" + token)
         }
         self.loginInput.becomeFirstResponder()
-        // Do any additional setup after loading the view, typically from a nib.
+        self.loginInput.delegate = self
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        self.navigationController?.navigationBarHidden = true
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        searchUser()
+        return true
+    }
+    
     
     func getToken () {
         
@@ -42,12 +53,13 @@ class ViewController: UIViewController {
         let postString = "grant_type=client_credentials&client_id=7c3f61b91fd0a586210cf47977f2c1d542c40cbfa3818a124dd6bf611b615be8&client_secret=4ffd3b3f77f7a5b7a8b97cd2ffa09fbd5c0915cd2b6e23198272c57e63316295"
         request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
-            guard error == nil && data != nil else {                                                          // check for fundamental networking error
+            guard error == nil && data != nil else {
                 print("error=\(error)")
                 return
             }
-            if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 200 {           // check for http errors
+            if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 200 {
                 print("statusCode should be 200, but is \(httpStatus.statusCode)")
+                return
             }
             
             do {
@@ -69,23 +81,40 @@ class ViewController: UIViewController {
     }
     
     func getData () {
-        print("getting user data")
         var login = String()
         if (self.loginInput.text != "") {
             login = self.loginInput.text!.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
         }else {
-            print("loginInput vide")
+            dispatch_async(dispatch_get_main_queue()) {
+                self.loadUser.stopAnimating()
+            }
+            dispatch_async(dispatch_get_main_queue()) {
+                let alert = UIAlertController(title: "⚠️You must enter a login !⚠️", message: "😓 Before searching for a login you must provide one 🙄", preferredStyle: .Alert)
+                alert.addAction(UIAlertAction(title: "Close", style: .Default, handler: nil))
+                self.presentViewController(alert, animated: true, completion: nil)
+            }
             return
         }
         let request = NSMutableURLRequest(URL: NSURL(string: "https://api.intra.42.fr/v2/users/" + login + "?access_token=" + self.token)!)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
-            guard error == nil && data != nil else {                                                          // check for fundamental networking error
+            guard error == nil && data != nil else {
                 print("error=\(error)")
+                self.loadUser.stopAnimating()
                 return
             }
-            if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 200 {           // check for http errors
-                print("statusCode should be 200, but is \(httpStatus.statusCode)")
-                if httpStatus.statusCode == 401 {
+            dispatch_async(dispatch_get_main_queue()) {
+            self.loadUser.stopAnimating()
+            }
+            if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 200 {
+                if (httpStatus.statusCode == 404) {
+                    dispatch_async(dispatch_get_main_queue()) {
+                        let alert = UIAlertController(title: "⚠️Login not found⚠️", message: "The login that you tried to search does not exist", preferredStyle: .Alert)
+                        alert.addAction(UIAlertAction(title: "Close", style: .Default, handler: nil))
+                        self.presentViewController(alert, animated: true, completion: nil)
+                    }
+                    return
+                }
+                if (httpStatus.statusCode == 401) {
                     self.getToken()
                 }
             }
@@ -102,7 +131,7 @@ class ViewController: UIViewController {
         }
         task.resume()
     }
-    
+
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "viewUser" {
             if let destination = segue.destinationViewController as? UserViewController {

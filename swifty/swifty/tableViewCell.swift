@@ -11,6 +11,5 @@ import UIKit
 class tableViewCell: UITableViewCell {
     
     @IBOutlet weak var projectNameLabel: UILabel!
-    @IBOutlet weak var extProjectNameLabel: UILabel!
     @IBOutlet weak var noteLabel: UILabel!
 }
