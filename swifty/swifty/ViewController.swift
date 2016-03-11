@@ -50,7 +50,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         let request = NSMutableURLRequest(URL: NSURL(string: "https://api.intra.42.fr/oauth/token")!)
         request.HTTPMethod = "POST"
-        let postString = "grant_type=client_credentials&client_id=7c3f61b91fd0a586210cf47977f2c1d542c40cbfa3818a124dd6bf611b615be8&client_secret=4ffd3b3f77f7a5b7a8b97cd2ffa09fbd5c0915cd2b6e23198272c57e63316295"
+        let postString = "grant_type=client_credentials&client_id="client_id"&client_secret="client_secret""
         request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
             guard error == nil && data != nil else {
